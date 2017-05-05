@@ -109,7 +109,6 @@
     </Content>
     <Content Include="ServiceBusTrigger\function.json" />
     <Content Include="host.json" />
-    <None Include="Properties\PublishProfiles\hotmailfunctions - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\hotmailfunctions - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
