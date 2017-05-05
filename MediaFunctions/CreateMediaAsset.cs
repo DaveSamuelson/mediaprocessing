@@ -33,7 +33,7 @@ namespace MediaFunctions
         // Field for service context.
         private static CloudMediaContext _context = null;
         private static MediaServicesCredentials _cachedCredentials = null;
-        private static CloudStorageAccount _destinationStorageAccount = null;
+        //private static CloudStorageAccount _destinationStorageAccount = null;
 
 
 
