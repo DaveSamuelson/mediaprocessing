@@ -152,7 +152,7 @@
       "apiVersion": "2015-05-01",
       "name": "[parameters('functionAppName')]",
       "type": "microsoft.insights/components",
-      "location": "South Central US",
+      "location": "[parameters('location')]",
       "tags": {
         "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', parameters('functionAppName'))]": "Resource"
       },
