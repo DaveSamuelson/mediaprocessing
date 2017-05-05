@@ -1,0 +1,18 @@
+﻿{
+  "disabled": false,
+  "scriptFile": "..\\bin\\MediaFunctions.dll",
+  "entryPoint": "MediaFunctions.CreateMediaAsset.Run",
+  "bindings": [
+    {
+      "webHookType": "genericJson",
+      "name": "req",
+      "type": "httpTrigger",
+      "direction": "in"
+    },
+    {
+      "name": "res",
+      "type": "http",
+      "direction": "out"
+    }
+  ]
+}

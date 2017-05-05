@@ -68,6 +68,24 @@
     <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=1.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.1.1.1\lib\netstandard1.1\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Practices.TransientFaultHandling.Core, Version=5.1.1209.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\TransientFaultHandling.Core.5.1.1209.1\lib\NET4\Microsoft.Practices.TransientFaultHandling.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Configuration, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.3.2.3\lib\net40\Microsoft.WindowsAzure.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.MediaServices.Client, Version=3.8.0.5, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\windowsazure.mediaservices.3.8.0.5\lib\net45\Microsoft.WindowsAzure.MediaServices.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.MediaServices.Client.Common.BlobTransfer, Version=3.8.0.5, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\windowsazure.mediaservices.3.8.0.5\lib\net45\Microsoft.WindowsAzure.MediaServices.Client.Common.BlobTransfer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.MediaServices.Client.Common.FileEncryption, Version=3.8.0.5, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\windowsazure.mediaservices.3.8.0.5\lib\net45\Microsoft.WindowsAzure.MediaServices.Client.Common.FileEncryption.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.MediaServices.Client.Extensions, Version=3.8.0.3, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\windowsazure.mediaservices.extensions.3.8.0.3\lib\net45\Microsoft.WindowsAzure.MediaServices.Client.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.WindowsAzure.Storage, Version=8.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\WindowsAzure.Storage.8.1.1\lib\net45\Microsoft.WindowsAzure.Storage.dll</HintPath>
     </Reference>
@@ -75,6 +93,9 @@
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=4.0.20511.1437, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.4.0.2.205111437\lib\net45\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+    </Reference>
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -109,6 +130,8 @@
     </Content>
     <Content Include="ServiceBusTrigger\function.json" />
     <Content Include="host.json" />
+    <Content Include="CreateMediaAsset\function.json" />
+    <Content Include="AnalyseMediaAsset\function.json" />
     <None Include="Properties\PublishProfiles\hotmailfunctions - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -121,13 +144,11 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CreateMediaAsset.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceBusTrigger.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="001 Create Asset\" />
-    <Folder Include="002 Analyse Asset\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
