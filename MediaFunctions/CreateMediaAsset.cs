@@ -8,8 +8,7 @@ using Microsoft.Azure.WebJobs.Host;
 
 namespace MediaFunctions
 {
-
-
+    
     public class CreateMediaAsset
     {
         // Read values from the App.config file.
