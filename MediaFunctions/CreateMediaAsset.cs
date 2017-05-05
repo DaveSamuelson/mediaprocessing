@@ -22,16 +22,11 @@ namespace MediaFunctions
         // Field for service context.
         private static CloudMediaContext _context = null;
         private static MediaServicesCredentials _cachedCredentials = null;
-        //private static CloudStorageAccount _destinationStorageAccount = null;
-
-
-
+        
 
         public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceWriter log)
         {
             log.Info($"C# HTTP trigger function processed a request. RequestUri={req.RequestUri}");
-
-            log.Info($"Webhook was triggered!");
 
             string jsonContent = await req.Content.ReadAsStringAsync();
             dynamic data = JsonConvert.DeserializeObject(jsonContent);
@@ -40,9 +35,7 @@ namespace MediaFunctions
 
             if (data.assetName == null)
             {
-                // for test
-                // data.Path = "/input/WP_20121015_081924Z.mp4";
-
+              
                 return req.CreateResponse(HttpStatusCode.BadRequest, new
                 {
                     error = "Please pass assetName in the input object"
