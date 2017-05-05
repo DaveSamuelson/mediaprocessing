@@ -13,6 +13,21 @@
     },
     "functionAppStorage": {
       "value": "hotmailfunctionsstorage"
+    },
+    "mediaAccountName": {
+      "value": "hotmailmediaaccount"
+    },
+    "mediaStorage": {
+      "value": "hotmailmediastorage"
+    },
+    "sourceCodeRepositoryURL": {
+      "value": "https://github.com/DaveSamuelson/mediaprocessing.git"
+    },
+    "sourceCodeBranch": {
+      "value": "master"
+    },
+    "functionKey": {
+      "value":"j0txf1f8msjytzvpe40nxbpxdcxtqcgxy0nt"
     }
   }
 }
