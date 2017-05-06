@@ -71,9 +71,9 @@ namespace MediaFunctions
                     _context.Locators.CreateLocator(LocatorType.Sas, newAsset, writePolicy);
 
                 // Get the asset container URI and Blob copy from mediaContainer to assetContainer. 
-                CloudBlobContainer destAssetContainer =
-                    blobClient.GetContainerReference((new Uri(destinationLocator.Path)).Segments[1]);
-
+                // Define the destination container and create this if it doesn't exist
+                CloudBlobContainer destAssetContainer = blobClient.GetContainerReference((new Uri(destinationLocator.Path)).Segments[1]);
+                log.Info($"Destination Container is : {destAssetContainer.Name}");
                 if (destAssetContainer.CreateIfNotExists())
                 {
                     destAssetContainer.SetPermissions(new BlobContainerPermissions
@@ -82,22 +82,23 @@ namespace MediaFunctions
                     });
                 }
                
+                // Get source blob from container defined in configuration
                 CloudBlobContainer sourceContainer = blobClient.GetContainerReference(Environment.GetEnvironmentVariable("InputMediaContainer"));
                 ICloudBlob sourceBlob = sourceContainer.GetBlockBlobReference(assetName);
 
                 // Associate asset file  
                 var assetFile = newAsset.AssetFiles.Create(sourceBlob.Name);
-                //ICloudBlob destinationBlob = destAssetContainer.GetBlockBlobReference(assetFile.Name);
+                ICloudBlob destinationBlob = destAssetContainer.GetBlockBlobReference(assetFile.Name);
 
                 //// Call the CopyBlobHelpers.CopyBlobAsync extension method to copy blobs.
-                //using (Task task =
-                //    CopyBlobHelpers.CopyBlobAsync((CloudBlockBlob)sourceBlob,
-                //        (CloudBlockBlob)destinationBlob,
-                //        new BlobRequestOptions(),
-                //        CancellationToken.None))
-                //{
-                //    task.Wait();
-                //}
+                using (Task task =
+                    CopyBlobHelpers.CopyBlobAsync((CloudBlockBlob)sourceBlob,
+                        (CloudBlockBlob)destinationBlob,
+                        new BlobRequestOptions(),
+                        CancellationToken.None))
+                {
+                    task.Wait();
+                }
 
                 assetFile.ContentFileSize = (sourceBlob as ICloudBlob).Properties.Length;
                 assetFile.Update();
