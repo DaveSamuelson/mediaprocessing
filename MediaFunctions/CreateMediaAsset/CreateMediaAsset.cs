@@ -69,8 +69,8 @@ namespace MediaFunctions
                 
                 newAsset = _context.Assets.Create(assetName, AssetCreationOptions.None);
                 IAccessPolicy writePolicy = _context.AccessPolicies.Create("writePolicy", TimeSpan.FromHours(24), AccessPermissions.Write);
-                //ILocator destinationLocator =
-                //    _context.Locators.CreateLocator(LocatorType.Sas, newAsset, writePolicy);
+                ILocator destinationLocator =
+                    _context.Locators.CreateLocator(LocatorType.Sas, newAsset, writePolicy);
 
                 // Get the asset container URI and Blob copy from mediaContainer to assetContainer. 
                 // Define the destination container and create this if it doesn't exist
