@@ -35,7 +35,7 @@ namespace MediaFunctions
             if (data.assetName == null)
             {
               
-                return req.CreateResponse(HttpStatusCode.BadRequest, new
+                return  req.CreateResponse(HttpStatusCode.BadRequest, new
                 {
                     error = "Please pass assetName in the input object"
                 });
