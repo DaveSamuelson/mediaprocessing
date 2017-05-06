@@ -101,13 +101,16 @@ namespace MediaFunctions
                 CloudBlobContainer assetContainer = destBlobStorage.GetContainerReference(destinationContainerName);
                 log.Info($"assetContainer retrieved");
 
+                assetContainer.FetchAttributes();
                 // Get hold of the destination blobs
                 var blobs = assetContainer.ListBlobs();
                 log.Info($"blobs retrieved");
 
-                assetContainer.FetchAttributes();
+                
                 foreach (CloudBlockBlob blob in blobs)
                 {
+
+                
                     var assetFile = asset.AssetFiles.Create(blob.Name);
                     assetFile.ContentFileSize = blob.Properties.Length;
                     //assetFile.IsPrimary = true;
