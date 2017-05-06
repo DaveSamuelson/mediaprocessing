@@ -5,6 +5,10 @@ using Newtonsoft.Json;
 using Microsoft.WindowsAzure.MediaServices.Client;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs.Host;
+using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Auth;
+using System.Threading;
 
 namespace MediaFunctions
 {
@@ -21,6 +25,7 @@ namespace MediaFunctions
         // Field for service context.
         private static CloudMediaContext _context = null;
         private static MediaServicesCredentials _cachedCredentials = null;
+        private static CloudStorageAccount _storageAccount = null;
         
 
         public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceWriter log)
@@ -34,7 +39,6 @@ namespace MediaFunctions
 
             if (data.assetName == null)
             {
-              
                 return  req.CreateResponse(HttpStatusCode.BadRequest, new
                 {
                     error = "Please pass assetName in the input object"
@@ -57,7 +61,50 @@ namespace MediaFunctions
                 // Used the chached credentials to create CloudMediaContext.
                 _context = new CloudMediaContext(_cachedCredentials);
 
+                
+                _storageAccount =  new CloudStorageAccount(new StorageCredentials(_storageAccountName, _storageAccountKey), true);
+                CloudBlobClient blobClient = _storageAccount.CreateCloudBlobClient();
+
                 newAsset = _context.Assets.Create(assetName, AssetCreationOptions.None);
+                IAccessPolicy writePolicy = _context.AccessPolicies.Create("writePolicy", TimeSpan.FromHours(24), AccessPermissions.Write);
+                ILocator destinationLocator =
+                    _context.Locators.CreateLocator(LocatorType.Sas, newAsset, writePolicy);
+
+                // Get the asset container URI and Blob copy from mediaContainer to assetContainer. 
+                CloudBlobContainer destAssetContainer =
+                    blobClient.GetContainerReference((new Uri(destinationLocator.Path)).Segments[1]);
+
+                if (destAssetContainer.CreateIfNotExists())
+                {
+                    destAssetContainer.SetPermissions(new BlobContainerPermissions
+                    {
+                        PublicAccess = BlobContainerPublicAccessType.Blob
+                    });
+                }
+               
+                CloudBlobContainer sourceContainer = blobClient.GetContainerReference(Environment.GetEnvironmentVariable("InputMediaContainer"));
+                ICloudBlob sourceBlob = sourceContainer.GetBlockBlobReference(assetName);
+
+                // Associate asset file  
+                var assetFile = newAsset.AssetFiles.Create(sourceBlob.Name);
+                ICloudBlob destinationBlob = destAssetContainer.GetBlockBlobReference(assetFile.Name);
+
+                // Call the CopyBlobHelpers.CopyBlobAsync extension method to copy blobs.
+                using (Task task =
+                    CopyBlobHelpers.CopyBlobAsync((CloudBlockBlob)sourceBlob,
+                        (CloudBlockBlob)destinationBlob,
+                        new BlobRequestOptions(),
+                        CancellationToken.None))
+                {
+                    task.Wait();
+                }
+
+                assetFile.ContentFileSize = (sourceBlob as ICloudBlob).Properties.Length;
+                assetFile.Update();
+
+                destinationLocator.Delete();
+                writePolicy.Delete();
+                
 
             }
             catch (Exception ex)
