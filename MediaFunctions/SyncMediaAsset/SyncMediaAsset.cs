@@ -105,14 +105,14 @@ namespace MediaFunctions
                 var blobs = assetContainer.ListBlobs();
                 log.Info($"blobs retrieved");
 
-
+                assetContainer.FetchAttributes();
                 foreach (CloudBlockBlob blob in blobs)
                 {
                     var assetFile = asset.AssetFiles.Create(blob.Name);
                     assetFile.ContentFileSize = blob.Properties.Length;
                     //assetFile.IsPrimary = true;
                     assetFile.Update();
-                    log.Info($"Asset file updated : {assetFile.Name}");
+                    log.Info($"Daves Asset file updated : {assetFile.Name}");
 
                 }
 
