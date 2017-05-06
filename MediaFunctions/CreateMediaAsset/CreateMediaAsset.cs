@@ -83,14 +83,11 @@ namespace MediaFunctions
                     });
                 }
 
-                log.Info($"About to create source conatiner");
                 // Get source blob from container defined in configuration
                 CloudBlobContainer sourceContainer = blobClient.GetContainerReference(Environment.GetEnvironmentVariable("InputMediaContainer"));
-                log.Info($"Source container has been created");
                 ICloudBlob sourceBlob = sourceContainer.GetBlockBlobReference(assetName);
 
-                log.Info($"Sourec blob has been created");
-
+                
                 // Associate asset file  
                 var assetFile = newAsset.AssetFiles.Create(sourceBlob.Name);
                 ICloudBlob destinationBlob = destAssetContainer.GetBlockBlobReference(assetFile.Name);
@@ -103,9 +100,13 @@ namespace MediaFunctions
                 //    CancellationToken.None);
                 //        //)
                 //{
-                 //   task.Wait();
+                //   task.Wait();
                 //}
 
+                
+
+                sourceContainer.FetchAttributes();
+                log.Info($"Asset File Properties are : {sourceBlob.Properties.BlobType}");
                 assetFile.ContentFileSize = (sourceBlob as ICloudBlob).Properties.Length;
                 assetFile.Update();
 
