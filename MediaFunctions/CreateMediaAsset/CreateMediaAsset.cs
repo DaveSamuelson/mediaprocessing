@@ -91,6 +91,7 @@ namespace MediaFunctions
                 // Associate asset file  
                 var assetFile = newAsset.AssetFiles.Create(sourceBlob.Name);
                 ICloudBlob destinationBlob = destAssetContainer.GetBlockBlobReference(assetFile.Name);
+                log.Info($"About to call copy {destinationBlob.Uri}");
 
                 //// Call the CopyBlobHelpers.CopyBlobAsync extension method to copy blobs.
                 //using (Task task =
@@ -103,13 +104,14 @@ namespace MediaFunctions
                 //   task.Wait();
                 //}
                 log.Info($"About to call copy");
-                await  ((CloudBlob) destinationBlob).StartCopyAsync(new Uri(sourceBlob.Uri.AbsoluteUri));
+                log.Info($"Source Blob Absolute URI is {sourceBlob.Uri.AbsoluteUri}");
+                ((CloudBlob) destinationBlob).StartCopy(new Uri(sourceBlob.Uri.AbsoluteUri));
 
 
                 sourceContainer.FetchAttributes();
                 destAssetContainer.FetchAttributes();
 
-                log.Info($"Asset File Properties are : {sourceBlob.Properties.BlobType}");
+                log.Info($"Dest Blob Properties are : {destinationBlob.Properties.BlobType}");
                 assetFile.ContentFileSize = (sourceBlob as ICloudBlob).Properties.Length;
                 assetFile.Update();
 
