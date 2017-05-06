@@ -139,6 +139,7 @@
     <Content Include="CreateMediaAsset\function.json" />
     <Content Include="AnalyseMediaAsset\function.json" />
     <Content Include="ServiceBusTrigger\function.json" />
+    <Content Include="appsettings.json" />
     <None Include="Properties\PublishProfiles\hotmailfunctions - Web Deploy.pubxml" />
     <Content Include="SyncMediaAsset\function.json" />
     <Content Include="SubmitMediaIndexer\function.json" />

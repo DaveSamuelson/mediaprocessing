@@ -109,6 +109,7 @@ namespace MediaFunctions
                 //{
 
                 CloudBlockBlob blob = assetContainer.GetBlockBlobReference(asset.Name);
+                blob.FetchAttributes();
                 log.Info($"blobs retrieved {blob.Uri} {blob.Name} {blob.Properties.Length}");
                 
                 var assetFile = asset.AssetFiles.Create(blob.Name);
