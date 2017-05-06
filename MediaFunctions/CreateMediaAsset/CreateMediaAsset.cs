@@ -102,7 +102,7 @@ namespace MediaFunctions
                 //        //)
                 //{
                 //   task.Wait();
-                //}
+                //}  //
                 log.Info($"About to call copy");
                 log.Info($"Source Blob Absolute URI is {sourceBlob.Uri.AbsoluteUri}");
                 ((CloudBlob) destinationBlob).StartCopy(new Uri(sourceBlob.Uri.AbsoluteUri));
