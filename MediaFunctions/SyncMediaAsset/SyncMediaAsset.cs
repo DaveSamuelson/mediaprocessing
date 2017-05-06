@@ -45,9 +45,7 @@ namespace MediaFunctions
 
             if (data.assetId == null)
             {
-                // for test
-                // data.Path = "/input/WP_20121015_081924Z.mp4";
-
+                
                 return req.CreateResponse(HttpStatusCode.BadRequest, new
                 {
                     error = "Please pass assetId in the input object"
@@ -101,23 +99,23 @@ namespace MediaFunctions
                 CloudBlobContainer assetContainer = destBlobStorage.GetContainerReference(destinationContainerName);
                 log.Info($"assetContainer retrieved");
 
-                assetContainer.FetchAttributes();
+                //assetContainer.FetchAttributes();
                 // Get hold of the destination blobs
                 var blobs = assetContainer.ListBlobs();
                 log.Info($"blobs retrieved");
 
-                
-                foreach (CloudBlockBlob blob in blobs)
-                {
 
-                
+                //foreach (CloudBlockBlob blob in blobs)
+                //{
+
+                CloudBlockBlob blob = assetContainer.GetBlockBlobReference(asset.Name);
                     var assetFile = asset.AssetFiles.Create(blob.Name);
                     assetFile.ContentFileSize = blob.Properties.Length;
                     //assetFile.IsPrimary = true;
                     assetFile.Update();
                     log.Info($"Daves Asset file updated : {assetFile.Name}");
 
-                }
+                //}
 
                 asset.Update();
 

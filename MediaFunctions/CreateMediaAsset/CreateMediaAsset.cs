@@ -1,22 +1,23 @@
-﻿using System;
-using System.Net;
-using System.Net.Http;
-using Newtonsoft.Json;
-using Microsoft.WindowsAzure.MediaServices.Client;
-
+﻿using Microsoft.Azure;
 using Microsoft.Azure.WebJobs.Host;
-using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure.MediaServices.Client;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Auth;
-using System.Threading.Tasks;
+using Microsoft.WindowsAzure.Storage.Blob;
+using Newtonsoft.Json;
+using System;
+using System.Net;
+using System.Net.Http;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace MediaFunctions
 {
-    
+
     public class CreateMediaAsset
     {
         // Read values from the App.config file.
+        //private static string davesfield = CloudConfigurationManager.GetSetting("AMSAccount");
         private static readonly string _mediaServicesAccountName = Environment.GetEnvironmentVariable("AMSAccount");
         private static readonly string _mediaServicesAccountKey = Environment.GetEnvironmentVariable("AMSKey");
 
