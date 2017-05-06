@@ -136,9 +136,10 @@
             "apiVersion": "2015-08-01",
             "comments": "These are the default appsettings configured on the functions app.",
             "dependsOn": [
-
               "[resourceId('Microsoft.Web/Sites', parameters('functionAppName'))]",
-              "[resourceId('Microsoft.Storage/storageAccounts', parameters('functionAppStorage'))]"
+              "[resourceId('Microsoft.Storage/storageAccounts', parameters('functionAppStorage'))]",
+              "[resourceId('Microsoft.Storage/storageAccounts', parameters('mediaStorage'))]",
+              "[resourceId('Microsoft.Media/mediaServices', parameters('mediaAccountName'))]"
             ],
             "properties": {
               "FUNCTIONS_EXTENSION_VERSION": "~1",
@@ -149,7 +150,7 @@
               "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('functionAppStorage'), ';AccountKey=', listKeys(variables('storageAccountid'),'2015-05-01-preview').key1)]",
               "AMSAccount": "[parameters('mediaAccountName')]",
               "AMSKey": "[listKeys(parameters('mediaAccountName'),'2015-10-01').primaryKey]",
-              "MediaServicesStorageAccountName": "[parameters('functionAppStorage')]",
+              "MediaServicesStorageAccountName": "[parameters('mediaStorage')]",
               "MediaServicesStorageAccountKey": "[listKeys(variables('storageAccountid'),'2015-05-01-preview').key1]",
               "StorageConnection": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('functionAppStorage'), ';AccountKey=', listKeys(variables('storageAccountid'),'2015-05-01-preview').key1)]",
               "SigningKey": "wOlDEUJ4/VN1No8HxVxpsRvej0DZrO5DXvImGLjFhfctPGFiMkUA0Cj8HSfJW7lePX9XsfHAMhw30p0yYqG+1A==",
@@ -234,7 +235,107 @@
         "parameters": "[parameters('parameters')]",
         "state": "[parameters('logicAppState')]"
       }
+    },
+
+    {
+      "type": "Microsoft.Logic/workflows",
+      "name": "[parameters('workflowName')]",
+      "apiVersion": "[parameters('logicAppApiVersion')]",
+      "location": "[resourceGroup().location]",
+      "tags": {},
+      "properties": {
+        "state": "Enabled",
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "$connections": {
+              "defaultValue": {},
+              "type": "Object"
+            }
+          },
+          "triggers": {
+            "When_one_or_more_blobs_are_added_or_modified_(metadata_only)": {
+              "recurrence": {
+                "frequency": "Second",
+                "interval": 3
+              },
+              "splitOn": "@triggerBody()",
+              "metadata": {
+                "L21lZGlhLXRvLXByb2Nlc3M=": "/media-to-process"
+              },
+              "type": "ApiConnection",
+              "inputs": {
+                "host": {
+                  "api": {
+                    "runtimeUrl": "https://logic-apis-northeurope.azure-apim.net/apim/azureblob"
+                  },
+                  "connection": {
+                    "name": "@parameters('$connections')['azureblob']['connectionId']"
+                  }
+                },
+                "method": "get",
+                "path": "/datasets/default/triggers/batch/onupdatedfile",
+                "queries": {
+                  "folderId": "L21lZGlhLXRvLXByb2Nlc3M=",
+                  "maxFileCount": 10
+                }
+              }
+            }
+          },
+          "actions": {
+            "CreateMediaAsset": {
+              "runAfter": {},
+              "type": "Function",
+              "inputs": {
+                "body": {
+                  "MediaType": "@triggerBody()?['MediaType']",
+                  "Path": "@triggerBody()?['Path']",
+                  "Size": "@triggerBody()?['Size']",
+                  "assetName": "@triggerBody()?['Name']"
+                },
+                "function": {
+                  "id": "[concat(resourceId('Microsoft.Web/sites', parameters('functionAppName')), '/functions/CreateMediaAsset')]"
+                }
+              }
+            }
+          },
+          "outputs": {}
+        },
+        "parameters": {
+          "$connections": {
+            "value": {
+              "azureblob": {
+                "connectionId": "[parameters('workflows_hotmailmediaLogicApp_connectionId')]",
+                "connectionName": "azureblob",
+                "id": "/subscriptions/69109ecd-6e72-45f5-b6df-a4163666a224/providers/Microsoft.Web/locations/northeurope/managedApis/azureblob"
+              }
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/Sites', parameters('functionAppName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/connections",
+      "apiVersion": "2015-08-01-preview",
+      "location": "[resourceGroup().location]",
+      "name": "azureblob",
+      "properties": {
+        "api": {
+          "id": "[concat('subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location,'/managedApis/{api}')]"
+        },
+        "displayName": "azureblob",
+        "parameterValues": {
+        }
+      }
     }
+
+
+
+
 
   ],
   "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",

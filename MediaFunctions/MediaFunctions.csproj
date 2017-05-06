@@ -140,6 +140,7 @@
     <Content Include="AnalyseMediaAsset\function.json" />
     <Content Include="ServiceBusTrigger\function.json" />
     <None Include="Properties\PublishProfiles\hotmailfunctions - Web Deploy.pubxml" />
+    <Content Include="SyncMediaAsset\function.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -153,9 +154,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CreateMediaAsset.cs" />
+    <Compile Include="CreateMediaAsset\CreateMediaAsset.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceBusTrigger.cs" />
+    <Compile Include="SyncMediaAsset\SyncMediaAsset.cs" />
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup>
