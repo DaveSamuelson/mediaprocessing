@@ -61,10 +61,12 @@ namespace MediaFunctions
                 // Used the chached credentials to create CloudMediaContext.
                 _context = new CloudMediaContext(_cachedCredentials);
 
-                
+                log.Info($"About to create _storageAccount");
+                log.Info($"About to create _storageAccount : {_storageAccountName}  {_storageAccountKey}");
                 _storageAccount =  new CloudStorageAccount(new StorageCredentials(_storageAccountName, _storageAccountKey), true);
                 CloudBlobClient blobClient = _storageAccount.CreateCloudBlobClient();
 
+                log.Info($"About to create new asset : {_storageAccountName}  {_storageAccountKey}");
                 newAsset = _context.Assets.Create(assetName, AssetCreationOptions.None);
                 IAccessPolicy writePolicy = _context.AccessPolicies.Create("writePolicy", TimeSpan.FromHours(24), AccessPermissions.Write);
                 ILocator destinationLocator =
