@@ -17,7 +17,7 @@ using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 
-namespace MediaFunctions.SyncMediaAsset
+namespace MediaFunctions
 {
     public class SyncMediaAsset
     {
