@@ -102,8 +102,9 @@ namespace MediaFunctions
                 //{
                 //   task.Wait();
                 //}
+                log.Info($"About to call copy");
+                await  ((CloudBlob) destinationBlob).StartCopyAsync(new Uri(sourceBlob.Uri.AbsoluteUri));
 
-                
 
                 sourceContainer.FetchAttributes();
                 destAssetContainer.FetchAttributes();
