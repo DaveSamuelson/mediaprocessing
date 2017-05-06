@@ -9,6 +9,7 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Auth;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace MediaFunctions
 {
@@ -68,11 +69,13 @@ namespace MediaFunctions
                 
                 newAsset = _context.Assets.Create(assetName, AssetCreationOptions.None);
                 IAccessPolicy writePolicy = _context.AccessPolicies.Create("writePolicy", TimeSpan.FromHours(24), AccessPermissions.Write);
-                ILocator destinationLocator =
-                    _context.Locators.CreateLocator(LocatorType.Sas, newAsset, writePolicy);
+                //ILocator destinationLocator =
+                //    _context.Locators.CreateLocator(LocatorType.Sas, newAsset, writePolicy);
 
                 // Get the asset container URI and Blob copy from mediaContainer to assetContainer. 
                 // Define the destination container and create this if it doesn't exist
+
+
                 CloudBlobContainer destAssetContainer = blobClient.GetContainerReference((new Uri(destinationLocator.Path)).Segments[1]);
                 log.Info($"Destination Container is : {destAssetContainer.Name}");
                 if (destAssetContainer.CreateIfNotExists())
@@ -88,23 +91,31 @@ namespace MediaFunctions
                 ICloudBlob sourceBlob = sourceContainer.GetBlockBlobReference(assetName);
 
                 
+
+
                 // Associate asset file  
                 var assetFile = newAsset.AssetFiles.Create(sourceBlob.Name);
                 ICloudBlob destinationBlob = destAssetContainer.GetBlockBlobReference(assetFile.Name);
                 log.Info($"About to call copy {destinationBlob.Uri}");
 
-                //// Call the CopyBlobHelpers.CopyBlobAsync extension method to copy blobs.
-                //using (Task task =
-                //await CopyBlobHelpers.CopyBlobAsync((CloudBlockBlob)sourceBlob,
-                //    (CloudBlockBlob)destinationBlob,
-                //    new BlobRequestOptions(),
-                //    CancellationToken.None);
-                //        //)
-                //{
-                //   task.Wait();
-                //}  //
+
+                // Call the CopyBlobHelpers.CopyBlobAsync extension method to copy blobs.
+                using (Task task =
+                    CopyBlobHelpers.CopyBlobAsync((CloudBlockBlob)sourceBlob,
+                        (CloudBlockBlob)destinationBlob,
+                        new BlobRequestOptions(),
+                        CancellationToken.None))
+                {
+                    task.Wait();
+                }
+
+
+
+
+
                 log.Info($"About to call copy");
                 log.Info($"Source Blob Absolute URI is {sourceBlob.Uri.AbsoluteUri}");
+                log.Info($"Destination Blob Absolute URI is {destinationBlob.Uri.AbsoluteUri}");
                 ((CloudBlob) destinationBlob).StartCopy(new Uri(sourceBlob.Uri.AbsoluteUri));
 
 
@@ -115,7 +126,7 @@ namespace MediaFunctions
                 assetFile.ContentFileSize = (sourceBlob as ICloudBlob).Properties.Length;
                 assetFile.Update();
 
-                destinationLocator.Delete();
+                //destinationLocator.Delete();
                 writePolicy.Delete();
                 
 
