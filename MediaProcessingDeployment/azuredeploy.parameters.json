@@ -27,7 +27,16 @@
       "value": "master"
     },
     "functionKey": {
-      "value":"j0txf1f8msjytzvpe40nxbpxdcxtqcgxy0nt"
+      "value": "j0txf1f8msjytzvpe40nxbpxdcxtqcgxy0nt"
+    },
+    "logicAppApiVersion": {
+      "value": "2016-06-01"
+    },
+    "workflowName": {
+      "value": "hotmailmediaLogicApp"
+    },
+    "workflowSchema": {
+      "value": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#"
     }
   }
 }

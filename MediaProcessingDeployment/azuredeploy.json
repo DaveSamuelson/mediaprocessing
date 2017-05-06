@@ -16,13 +16,16 @@
       "type": "string"
     },
     "mediaStorage": {
-      "type": "string"
+      "type": "string",
+      "metadata": {
+        "description": "Name of storage account for hosting media assets."
+      }
     },
     "sourceCodeRepositoryURL": {
       "type": "string",
       "defaultValue": "Enter path to your sourcecode repository",
       "metadata": {
-        "description": "Source code repository URL."
+        "description": "Please enter your Source Code epository URL."
       }
     },
     "sourceCodeBranch": {
@@ -34,10 +37,37 @@
     },
     "functionKey": {
       "type": "string",
-      "defaultValue": "j0txf1f8msjytzvpe40nxbpxdcxtqcgxy0nt",
       "metadata": {
         "description": "Function App Key to use for authorization of Webhook. You should replace this with the key you want to use for your Function application authorization"
       }
+    },
+    "logicAppApiVersion": {
+      "type": "string"
+    },
+    "workflowName": {
+      "type": "string"
+    },
+    "workflowSchema": {
+      "type": "string"
+    },
+    "logicAppState": {
+      "type": "string",
+      "defaultValue": "Enabled"
+    },
+    "definition": {
+      "type": "object",
+      "defaultValue": {
+        "contentVersion": "1.0.0.0",
+        "parameters": {},
+        "actions": {},
+        "triggers": {},
+        "outputs": {},
+        "$schema": "[parameters('workflowSchema')]"
+      }
+    },
+    "parameters": {
+      "type": "object",
+      "defaultValue": {}
     }
   },
   "variables": {
@@ -188,6 +218,21 @@
             "isPrimary": true
           }
         ]
+      }
+    },
+    {
+      "apiVersion": "[parameters('logicAppApiVersion')]",
+      "name": "[parameters('workflowName')]",
+      "type": "Microsoft.Logic/workflows",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/Sites', parameters('functionAppName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('functionAppStorage'))]"
+      ],
+      "properties": {
+        "definition": "[parameters('definition')]",
+        "parameters": "[parameters('parameters')]",
+        "state": "[parameters('logicAppState')]"
       }
     }
 
