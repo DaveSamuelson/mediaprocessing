@@ -80,6 +80,7 @@ namespace MediaFunctions
                 IAsset asset2 = _context.Assets.CreateFromBlob(sourceBlob2, new StorageCredentials(_storageAccountName, _storageAccountKey), AssetCreationOptions.None);
 
 
+                Microsoft.WindowsAzure.MediaServices.Client.AccessPermissions
 
 
                 //// FROM HERE 
@@ -89,7 +90,7 @@ namespace MediaFunctions
 
                 //CloudBlobClient destBlobStorage = _destinationStorageAccount.CreateCloudBlobClient();
 
-                
+
                 //IAccessPolicy writePolicy = _context.AccessPolicies.Create("writePolicy",
                 //    TimeSpan.FromHours(24), AccessPermissions.Write);
 
@@ -158,7 +159,7 @@ namespace MediaFunctions
                 ////ismAssetFiles.First().IsPrimary = true;
                 ////ismAssetFiles.First().Update();
 
-                
+
 
 
 
