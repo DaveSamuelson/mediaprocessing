@@ -86,7 +86,7 @@ namespace MediaFunctions
 
                 // Declare a new encoding job with the Standard encoder
                 int priority = 10;
-                job = _context.Jobs.Create("Azure Functions: " + asset.AssetFiles.Where(a => a.Id == assetid).FirstOrDefault(), priority);
+                job = _context.Jobs.Create($"Azure Functions Job Submission: {asset.Name}", priority);
 
                 IAsset an_asset = useEncoderOutputForAnalytics ? outputEncoding : asset;
 
