@@ -112,7 +112,7 @@ namespace MediaFunctions
                // blob.FetchAttributes();
                 log.Info($"blobs retrieved {blob.Uri} {blob.Name} {blob.Properties.Length}");
                 
-                var assetFile = asset.AssetFiles.Create(blob.Name);
+                    var assetFile = await asset.AssetFiles.CreateAsync(blob.Name, CancellationToken.None);
                     assetFile.ContentFileSize = blob.Properties.Length;
                     //assetFile.IsPrimary = true;
                     assetFile.Update();

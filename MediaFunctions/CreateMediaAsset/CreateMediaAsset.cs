@@ -6,6 +6,8 @@ using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json;
 using System;
+using System.Configuration;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -16,8 +18,7 @@ namespace MediaFunctions
 
     public class CreateMediaAsset
     {
-        // Read values from the App.config file.
-        //private static string davesfield = CloudConfigurationManager.GetSetting("AMSAccount");
+        
         private static readonly string _mediaServicesAccountName = Environment.GetEnvironmentVariable("AMSAccount");
         private static readonly string _mediaServicesAccountKey = Environment.GetEnvironmentVariable("AMSKey");
 
@@ -46,7 +47,7 @@ namespace MediaFunctions
                 });
             }
 
-            string assetName = data.assetName;
+            string assetName = data.assetName + "Copy";
             log.Info($"Using Azure Media Services account : {_mediaServicesAccountName}");
             IAsset newAsset = null;
 
