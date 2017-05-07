@@ -116,7 +116,8 @@ namespace MediaFunctions
                     presetPath = Path.Combine(homePath, @"site\repository\" + @"MediaFunctions\presets\" + "IndexerV2.json");
                 }
 
-                string Configuration = File.ReadAllText(presetPath).Replace("enGB", data.indexV2Language);
+                string Configuration = File.ReadAllText(presetPath).Replace("EnUs", data.indexV2Language);
+                log.Info($"Preset Configuration = {Configuration}");
 
                 // Create a task with the encoding details, using a string preset.
                 var task = job.Tasks.AddNew("Azure Media Indexer 2 Preview" + " task", mediaProcessor, Configuration, TaskOptions.None);

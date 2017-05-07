@@ -1,7 +1,7 @@
 ﻿{
   "disabled": false,
   "scriptFile": "..\\bin\\MediaFunctions.dll",
-  "entryPoint": "MediaFunctions.ServiceBusTrigger.Run",
+  "entryPoint": "MediaFunctions.CheckMediaJobStatus.Run",
   "bindings": [
     {
       "authLevel": "function",
