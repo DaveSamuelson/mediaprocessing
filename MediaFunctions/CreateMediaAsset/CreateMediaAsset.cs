@@ -88,11 +88,11 @@ namespace MediaFunctions
 
 
 
-
+                log.Info($"About to create desitination storage account");
                 // FROM HERE 
-                _destinationStorageAccount = new CloudStorageAccount(new StorageCredentials(_mediaServicesAccountName,
-                   _mediaServicesAccountKey), true);
-
+                _destinationStorageAccount = new CloudStorageAccount(new StorageCredentials(_storageAccountName,
+                   _storageAccountKey), true);
+                log.Info($"Destination storage account created");
 
                 CloudBlobClient destBlobStorage = _destinationStorageAccount.CreateCloudBlobClient();
 
@@ -103,21 +103,24 @@ namespace MediaFunctions
                 ILocator destinationLocator =
                     _context.Locators.CreateLocator(LocatorType.Sas, newAsset, writePolicy);
 
+
+                log.Info($"About to get destination asset container");
                 // Get the asset container URI and Blob copy from mediaContainer to assetContainer. 
                 CloudBlobContainer destAssetContainer =
                     destBlobStorage.GetContainerReference((new Uri(destinationLocator.Path)).Segments[1]);
+                log.Info($"Got destination asset container {destAssetContainer.Uri}");
 
-                if (destAssetContainer.CreateIfNotExists())
-                {
-                    destAssetContainer.SetPermissions(new BlobContainerPermissions
-                    {
-                        PublicAccess = BlobContainerPublicAccessType.Blob
-                    });
-                }
+                //if (destAssetContainer.CreateIfNotExists())
+                //{
+                //    destAssetContainer.SetPermissions(new BlobContainerPermissions
+                //    {
+                //        PublicAccess = BlobContainerPublicAccessType.Blob
+                //    });
+                //}
 
 
-                
-                
+
+
                 var blobList = sourceContainer.ListBlobs();
 
                 //foreach (var sourceBlob in blobList)
