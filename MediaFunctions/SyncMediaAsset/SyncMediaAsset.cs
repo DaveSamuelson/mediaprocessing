@@ -125,7 +125,9 @@ namespace MediaFunctions
 
                 destBlob.FetchAttributes();
                 var assetFile = asset.AssetFiles.Create((sourceBlob as ICloudBlob).Name);
-
+                assetFile.ContentFileSize = destBlob.Properties.Length;
+                assetFile.Update();
+                log.Info($"Asset file updated : {assetFile.Name}");
 
                 assetFile.Update();
 
