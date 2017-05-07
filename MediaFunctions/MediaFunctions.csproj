@@ -142,6 +142,9 @@
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Presets\IndexerV2.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\PublishProfiles\hotmailfunctions - Web Deploy.pubxml" />
     <Content Include="SyncMediaAsset\function.json" />
     <Content Include="SubmitMediaIndexer\function.json" />

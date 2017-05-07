@@ -51,25 +51,15 @@ namespace MediaFunctions
 
             if (data.assetId == null)
             {
-                // for test
-                // data.assetId = "nb:cid:UUID:2d0d78a2-685a-4b14-9cf0-9afb0bb5dbfc";
-
                 return req.CreateResponse(HttpStatusCode.BadRequest, new
                 {
                     error = "Please pass asset ID in the input object (assetId)"
                 });
             }
 
-            // for test
-            // data.WorkflowAssetId = "nb:cid:UUID:44fe8196-616c-4490-bf80-24d1e08754c5";
-            // if data.WorkflowAssetId is passed, then it means a Premium Encoding task is asked
-
             log.Info($"Using Azure Media Services account : {_mediaServicesAccountName}");
-
             IJob job = null;
-            
             int OutputIndex2 = -1;
-           
 
             try
             {
@@ -94,26 +84,26 @@ namespace MediaFunctions
                     });
                 }
 
-                if (data.useEncoderOutputForAnalytics != null && (data.mesPreset != null || data.mesPreset != null))  // User wants to use encoder output for media analytics
-                {
-                    useEncoderOutputForAnalytics = (bool)data.useEncoderOutputForAnalytics;
-                }
+                //if (data.useEncoderOutputForAnalytics != null && (data.mesPreset != null || data.mesPreset != null))  // User wants to use encoder output for media analytics
+                //{
+                //    useEncoderOutputForAnalytics = (bool)data.useEncoderOutputForAnalytics;
+                //}
 
 
                 // Declare a new encoding job with the Standard encoder
                 int priority = 10;
-                if (data.priority != null)
-                {
-                    priority = (int)data.priority;
-                }
+                //if (data.priority != null)
+                //{
+                //    priority = (int)data.priority;
+                //}
                 job = _context.Jobs.Create("Azure Functions Job", priority);
 
                 IAsset an_asset = useEncoderOutputForAnalytics ? outputEncoding : asset;
 
                 // Media Analytics
                 //OutputIndex2 = AddTask(job, an_asset, (string)data.indexV2Language, "Azure Media Indexer 2 Preview", "IndexerV2.json", "EnUs", ref taskindex);
-                if ((string)data.indexV2Language != null)
-                {
+               // if ((string)data.indexV2Language != null)
+                //{
                     // Get a media processor reference, and pass to it the name of the 
                     // processor to use for the specific task.
                     IMediaProcessor mediaProcessor = _context.MediaProcessors.Where(p => p.Name == "Azure Media Indexer 2 Preview").
@@ -128,7 +118,9 @@ namespace MediaFunctions
 
 
                     string homePath = Environment.GetEnvironmentVariable("HOME", EnvironmentVariableTarget.Process);
-                    string presetPath;
+                    log.Info($"Home path = {homePath}");
+
+                string presetPath;
 
                     if (homePath == String.Empty)
                     {
@@ -156,11 +148,11 @@ namespace MediaFunctions
                     task.OutputAssets.AddNew(an_asset.Name + " " + "Azure Media Indexer 2 Preview" + " Output", AssetCreationOptions.None);
 
                     OutputIndex2 = taskindex++;
-                }
-                else
-                {
-                    OutputIndex2 = -1;
-                }
+                //}
+                //else
+                //{
+                 //   OutputIndex2 = -1;
+               // }
 
 
 
