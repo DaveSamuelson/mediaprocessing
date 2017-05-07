@@ -21,7 +21,7 @@ namespace MediaFunctions
 {
     public class SubmitMediaIndexer
     {
-        
+
         // Read values from the App.config file.
         private static readonly string _mediaServicesAccountName = Environment.GetEnvironmentVariable("AMSAccount");
         private static readonly string _mediaServicesAccountKey = Environment.GetEnvironmentVariable("AMSKey");
@@ -84,86 +84,52 @@ namespace MediaFunctions
                     });
                 }
 
-                //if (data.useEncoderOutputForAnalytics != null && (data.mesPreset != null || data.mesPreset != null))  // User wants to use encoder output for media analytics
-                //{
-                //    useEncoderOutputForAnalytics = (bool)data.useEncoderOutputForAnalytics;
-                //}
-
-
                 // Declare a new encoding job with the Standard encoder
                 int priority = 10;
-                //if (data.priority != null)
-                //{
-                //    priority = (int)data.priority;
-                //}
-                job = _context.Jobs.Create("Azure Functions Job", priority);
+                job = _context.Jobs.Create("Azure Functions: " + asset.AssetFiles.Where(a => a.Id == assetid).FirstOrDefault(), priority);
 
                 IAsset an_asset = useEncoderOutputForAnalytics ? outputEncoding : asset;
 
-                // Media Analytics
-                //OutputIndex2 = AddTask(job, an_asset, (string)data.indexV2Language, "Azure Media Indexer 2 Preview", "IndexerV2.json", "EnUs", ref taskindex);
-               // if ((string)data.indexV2Language != null)
-                //{
-                    // Get a media processor reference, and pass to it the name of the 
-                    // processor to use for the specific task.
-                    IMediaProcessor mediaProcessor = _context.MediaProcessors.Where(p => p.Name == "Azure Media Indexer 2 Preview").
-    ToList().OrderBy(p => new Version(p.Version)).LastOrDefault();
 
-                    if (mediaProcessor == null)
-                        throw new ArgumentException(string.Format("Unknown media processor", "Azure Media Indexer 2 Preview"));
+                // Get a media processor reference, and pass to it the name of the processor to use for the specific task.
+                IMediaProcessor mediaProcessor = _context.MediaProcessors.Where(p => p.Name == "Azure Media Indexer 2 Preview").ToList().OrderBy(p => new Version(p.Version)).LastOrDefault();
 
-                 
-
-
-
-
-                    string homePath = Environment.GetEnvironmentVariable("HOME", EnvironmentVariableTarget.Process);
-                    log.Info($"Home path = {homePath}");
-
-                    string presetPath;
-                    if (homePath == String.Empty)
-                    {
-                        presetPath = @"../Presets/" + "IndexerV2.json";
-                    }
-                    else
-                    {
-                        // TODO:  Need to make path configurable
-                        presetPath = Path.Combine(homePath, @"site\repository\" + @"MediaFunctions\presets\" + "IndexerV2.json");
-                    }
-
-                    string Configuration = File.ReadAllText(presetPath).Replace("EnUs", data.indexV2Language);
-
-                    // Create a task with the encoding details, using a string preset.
-                    var task = job.Tasks.AddNew("Azure Media Indexer 2 Preview" + " task",
-                       mediaProcessor,
-                       Configuration,
-                       TaskOptions.None);
-
-                    task.Priority = priority;
-
-                    // Specify the input asset to be indexed.
-                    task.InputAssets.Add(an_asset);
-
-                    // Add an output asset to contain the results of the job.
-                    task.OutputAssets.AddNew(an_asset.Name + " " + "Azure Media Indexer 2 Preview" + " Output", AssetCreationOptions.None);
-
-                    OutputIndex2 = taskindex++;
-                //}
-                //else
-                //{
-                 //   OutputIndex2 = -1;
-               // }
+                if (mediaProcessor == null)
+                    throw new ArgumentException(string.Format("Unknown media processor", "Azure Media Indexer 2 Preview"));
 
 
 
 
 
 
+                string homePath = Environment.GetEnvironmentVariable("HOME", EnvironmentVariableTarget.Process);
+                log.Info($"Home path = {homePath}");
 
+                string presetPath;
+                if (homePath == String.Empty)
+                {
+                    presetPath = @"../Presets/" + "IndexerV2.json";
+                }
+                else
+                {
+                    // TODO:  Need to make path configurable
+                    presetPath = Path.Combine(homePath, @"site\repository\" + @"MediaFunctions\presets\" + "IndexerV2.json");
+                }
 
+                string Configuration = File.ReadAllText(presetPath).Replace("enGB", data.indexV2Language);
 
+                // Create a task with the encoding details, using a string preset.
+                var task = job.Tasks.AddNew("Azure Media Indexer 2 Preview" + " task", mediaProcessor, Configuration, TaskOptions.None);
+                task.Priority = priority;
 
+                // Specify the input asset to be indexed.
+                task.InputAssets.Add(an_asset);
 
+                // Add an output asset to contain the results of the job.
+                task.OutputAssets.AddNew(an_asset.Name + " " + "Azure Media Indexer 2 Preview" + " Output", AssetCreationOptions.None);
+                OutputIndex2 = taskindex++;
+
+           
                 job.Submit();
                 log.Info("Job Submitted");
             }
@@ -177,13 +143,10 @@ namespace MediaFunctions
             }
 
             job = _context.Jobs.Where(j => j.Id == job.Id).FirstOrDefault(); // Let's refresh the job
-
             log.Info("Job Id: " + job.Id);
 
-
-          
             string outputID = null;
-            if(OutputIndex2 > -1)
+            if (OutputIndex2 > -1)
             {
                 outputID = job.OutputMediaAssets[OutputIndex2].Id;
             }
@@ -210,7 +173,7 @@ namespace MediaFunctions
 
 
 
-         
+
 
 
 
