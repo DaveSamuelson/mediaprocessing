@@ -93,24 +93,24 @@ namespace MediaFunctions
                 CloudBlobContainer sourceContainer = blobClient.GetContainerReference(Environment.GetEnvironmentVariable("InputMediaContainer"));
                 CloudBlockBlob sourceBlob = sourceContainer.GetBlockBlobReference(assetname);
                 
-                IAccessPolicy writePolicy = _context.AccessPolicies.Create("writePolicy",
-                    TimeSpan.FromHours(24), AccessPermissions.Write);
+                //IAccessPolicy writePolicy = _context.AccessPolicies.Create("writePolicy",
+                //    TimeSpan.FromHours(24), AccessPermissions.Write);
 
-                ILocator destinationLocator =
-                    _context.Locators.CreateLocator(LocatorType.Sas, asset, writePolicy);
+                //ILocator destinationLocator =
+                //    _context.Locators.CreateLocator(LocatorType.Sas, asset, writePolicy);
 
 
                 log.Info($"About to get destination asset container");
                 // Get the asset container URI and Blob copy from mediaContainer to assetContainer. 
-                CloudBlobContainer destAssetContainer =
-                    blobClient.GetContainerReference((new Uri(destinationLocator.Path)).Segments[1]);
+                CloudBlobContainer destAssetContainer = blobClient.GetContainerReference(asset.Uri.Segments[1]);
+               // blobClient.GetContainerReference((new Uri( destinationLocator.Path)).Segments[1]);
                 log.Info($"Got destination asset container {destAssetContainer.Uri}");
 
 
-                destAssetContainer.SetPermissions(new BlobContainerPermissions
-                {
-                    PublicAccess = BlobContainerPublicAccessType.Container
-                });
+                //destAssetContainer.SetPermissions(new BlobContainerPermissions
+                //{
+                //    PublicAccess = BlobContainerPublicAccessType.Container
+                //});
 
 
                 // Get hold of the destination blob
@@ -122,15 +122,16 @@ namespace MediaFunctions
                 await destBlob.StartCopyAsync(sourceBlob);
                 log.Info($"BLOB copied");
 
-
+                sourceBlob.FetchAttributes();
                 destBlob.FetchAttributes();
                 var assetFile = asset.AssetFiles.Create((sourceBlob as ICloudBlob).Name);
+                assetFile.ContentFileSize = destBlob.Properties.Length;
 
-               
+
                 assetFile.Update();
 
-                destinationLocator.Delete();
-                writePolicy.Delete();
+                //destinationLocator.Delete();
+                //writePolicy.Delete();
 
 
 
