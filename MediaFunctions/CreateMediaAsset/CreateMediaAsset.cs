@@ -70,83 +70,93 @@ namespace MediaFunctions
                 
                 newAsset = _context.Assets.Create(assetName, AssetCreationOptions.None);
 
-
-
-                // FROM HERE 
-                _destinationStorageAccount =  new CloudStorageAccount(new StorageCredentials(_mediaServicesAccountName,
-                   _mediaServicesAccountKey), true);
-
-
-                CloudBlobClient destBlobStorage = _destinationStorageAccount.CreateCloudBlobClient();
-
-                
-                IAccessPolicy writePolicy = _context.AccessPolicies.Create("writePolicy",
-                    TimeSpan.FromHours(24), AccessPermissions.Write);
-
-                ILocator destinationLocator =
-                    _context.Locators.CreateLocator(LocatorType.Sas, newAsset, writePolicy);
-
-                // Get the asset container URI and Blob copy from mediaContainer to assetContainer. 
-                CloudBlobContainer destAssetContainer =
-                    destBlobStorage.GetContainerReference((new Uri(destinationLocator.Path)).Segments[1]);
-
-                if (destAssetContainer.CreateIfNotExists())
-                {
-                    destAssetContainer.SetPermissions(new BlobContainerPermissions
-                    {
-                        PublicAccess = BlobContainerPublicAccessType.Blob
-                    });
-                }
-
-
                 CloudBlobClient sourceCloudBlobClient =
                 _storageAccount.CreateCloudBlobClient();
 
                 CloudBlobContainer sourceContainer =
-                sourceCloudBlobClient.GetContainerReference(assetName);
+                sourceCloudBlobClient.GetContainerReference(Environment.GetEnvironmentVariable("InputMediaContainer "));
+
+                CloudBlockBlob sourceBlob2 = sourceContainer.GetBlockBlobReference(assetName);
+                IAsset asset2 = _context.Assets.CreateFromBlob(sourceBlob2, new StorageCredentials(_storageAccountName, _storageAccountKey), AssetCreationOptions.None);
 
 
-                //IAsset asset2 = _context.Assets.CreateFromBlob(sourceBlob, storageCredentials, AssetCreationOptions.None);
 
-                var blobList = sourceContainer.ListBlobs();
 
-                foreach (var sourceBlob in blobList)
-                {
-                    var assetFile = newAsset.AssetFiles.Create((sourceBlob as ICloudBlob).Name);
+                //// FROM HERE 
+                //_destinationStorageAccount =  new CloudStorageAccount(new StorageCredentials(_mediaServicesAccountName,
+                //   _mediaServicesAccountKey), true);
 
-                    ICloudBlob destinationBlob = destAssetContainer.GetBlockBlobReference(assetFile.Name);
 
-                    // Call the CopyBlobHelpers.CopyBlobAsync extension method to copy blobs.
-                    using (Task task =
-                        CopyBlobHelpers.CopyBlobAsync((CloudBlockBlob)sourceBlob,
-                            (CloudBlockBlob)destinationBlob,
-                            new BlobRequestOptions(),
-                            CancellationToken.None))
-                    {
-                        task.Wait();
-                    }
+                //CloudBlobClient destBlobStorage = _destinationStorageAccount.CreateCloudBlobClient();
 
-                    assetFile.ContentFileSize = (sourceBlob as ICloudBlob).Properties.Length;
-                    assetFile.Update();
-                    Console.WriteLine("File {0} is of {1} size", assetFile.Name, assetFile.ContentFileSize);
-                }
+                
+                //IAccessPolicy writePolicy = _context.AccessPolicies.Create("writePolicy",
+                //    TimeSpan.FromHours(24), AccessPermissions.Write);
 
-                newAsset.Update();
+                //ILocator destinationLocator =
+                //    _context.Locators.CreateLocator(LocatorType.Sas, newAsset, writePolicy);
 
-                destinationLocator.Delete();
-                writePolicy.Delete();
+                //// Get the asset container URI and Blob copy from mediaContainer to assetContainer. 
+                //CloudBlobContainer destAssetContainer =
+                //    destBlobStorage.GetContainerReference((new Uri(destinationLocator.Path)).Segments[1]);
 
-                // Set the primary asset file.
-                // If, for example, we copied a set of Smooth Streaming files, 
-                // set the .ism file to be the primary file. 
-                // If we, for example, copied an .mp4, then the mp4 would be the primary file. 
-                //var ismAssetFiles = newAsset.AssetFiles.ToList().
-                //    Where(f => f.Name.EndsWith(".ism", StringComparison.OrdinalIgnoreCase)).ToArray();
+                //if (destAssetContainer.CreateIfNotExists())
+                //{
+                //    destAssetContainer.SetPermissions(new BlobContainerPermissions
+                //    {
+                //        PublicAccess = BlobContainerPublicAccessType.Blob
+                //    });
+                //}
 
-                // The following code assigns the first .ism file as the primary file in the asset.
-                // An asset should have one .ism file.  
-                //ismAssetFiles.First().IsPrimary = true;
-                //ismAssetFiles.First().Update();
+
+                //CloudBlobClient sourceCloudBlobClient =
+                //_storageAccount.CreateCloudBlobClient();
+
+                //CloudBlobContainer sourceContainer =
+                //sourceCloudBlobClient.GetContainerReference(Environment.GetEnvironmentVariable("InputMediaContainer "));
+
+                //CloudBlockBlob sourceBlob2 = sourceContainer.GetBlockBlobReference(assetName);
+                //IAsset asset2 =  _context.Assets.CreateFromBlob(sourceBlob2, new StorageCredentials(_storageAccountName, _storageAccountKey), AssetCreationOptions.None);
+
+                //var blobList = sourceContainer.ListBlobs();
+
+                //foreach (var sourceBlob in blobList)
+                //{
+                //    var assetFile = newAsset.AssetFiles.Create((sourceBlob as ICloudBlob).Name);
+
+                //    ICloudBlob destinationBlob = destAssetContainer.GetBlockBlobReference(assetFile.Name);
+
+                //    // Call the CopyBlobHelpers.CopyBlobAsync extension method to copy blobs.
+                //    using (Task task =
+                //        CopyBlobHelpers.CopyBlobAsync((CloudBlockBlob)sourceBlob,
+                //            (CloudBlockBlob)destinationBlob,
+                //            new BlobRequestOptions(),
+                //            CancellationToken.None))
+                //    {
+                //        task.Wait();
+                //    }
+
+                //    assetFile.ContentFileSize = (sourceBlob as ICloudBlob).Properties.Length;
+                //    assetFile.Update();
+                //    Console.WriteLine("File {0} is of {1} size", assetFile.Name, assetFile.ContentFileSize);
+                //}
+
+                //newAsset.Update();
+
+                //destinationLocator.Delete();
+                //writePolicy.Delete();
+
+                //// Set the primary asset file.
+                //// If, for example, we copied a set of Smooth Streaming files, 
+                //// set the .ism file to be the primary file. 
+                //// If we, for example, copied an .mp4, then the mp4 would be the primary file. 
+                ////var ismAssetFiles = newAsset.AssetFiles.ToList().
+                ////    Where(f => f.Name.EndsWith(".ism", StringComparison.OrdinalIgnoreCase)).ToArray();
+
+                //// The following code assigns the first .ism file as the primary file in the asset.
+                //// An asset should have one .ism file.  
+                ////ismAssetFiles.First().IsPrimary = true;
+                ////ismAssetFiles.First().Update();
 
                 
 
