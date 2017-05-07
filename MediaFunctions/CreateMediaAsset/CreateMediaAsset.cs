@@ -153,7 +153,7 @@ namespace MediaFunctions
                 //    Console.WriteLine("File {0} is of {1} size", assetFile.Name, assetFile.ContentFileSize);
                 ////}
 
-                //newAsset.Update();
+                newAsset.Update();
 
                 //destinationLocator.Delete();
                 //writePolicy.Delete();
