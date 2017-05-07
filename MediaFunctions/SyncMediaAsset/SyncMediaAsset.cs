@@ -86,36 +86,36 @@ namespace MediaFunctions
 
                 log.Info("Asset found, ID: " + asset.Id);
 
-                //Get a reference to the storage account that is associated with the Media Services account. 
-                StorageCredentials mediaServicesStorageCredentials =
-                    new StorageCredentials(_storageAccountName, _storageAccountKey);
-                var _destinationStorageAccount = new CloudStorageAccount(mediaServicesStorageCredentials, false);
+                ////Get a reference to the storage account that is associated with the Media Services account. 
+                //StorageCredentials mediaServicesStorageCredentials =
+                //    new StorageCredentials(_storageAccountName, _storageAccountKey);
+                //var _destinationStorageAccount = new CloudStorageAccount(mediaServicesStorageCredentials, false);
 
-                CloudBlobClient destBlobStorage = _destinationStorageAccount.CreateCloudBlobClient();
+                //CloudBlobClient destBlobStorage = _destinationStorageAccount.CreateCloudBlobClient();
 
-                // Get the destination asset container reference
-                string destinationContainerName = asset.Uri.Segments[1];
-                log.Info($"destinationContainerName : {destinationContainerName}");
+                //// Get the destination asset container reference
+                //string destinationContainerName = asset.Uri.Segments[1];
+                //log.Info($"destinationContainerName : {destinationContainerName}");
 
-                CloudBlobContainer assetContainer = destBlobStorage.GetContainerReference(destinationContainerName);
-                log.Info($"assetContainer retrieved {assetContainer.Name}");
+                //CloudBlobContainer assetContainer = destBlobStorage.GetContainerReference(destinationContainerName);
+                //log.Info($"assetContainer retrieved {assetContainer.Name}");
 
-                // Get hold of the destination blobs
-                var blobs = assetContainer.ListBlobs();
-                log.Info($"blobs retrieved {blobs.Count()}");
+                //// Get hold of the destination blobs
+                //var blobs = assetContainer.ListBlobs();
+                //log.Info($"blobs retrieved {blobs.Count()}");
 
 
-                foreach (CloudBlockBlob blob in blobs)
-                {
-                    var assetFile = asset.AssetFiles.Create(blob.Name);
-                    assetFile.ContentFileSize = blob.Properties.Length;
-                    //assetFile.IsPrimary = true;
-                    assetFile.Update();
-                    log.Info($"Asset file updated : {assetFile.Name}");
+                //foreach (CloudBlockBlob blob in blobs)
+                //{
+                //    var assetFile = asset.AssetFiles.Create(blob.Name);
+                //    assetFile.ContentFileSize = blob.Properties.Length;
+                //    //assetFile.IsPrimary = true;
+                //    assetFile.Update();
+                //    log.Info($"Asset file updated : {assetFile.Name}");
 
-                }
+                //}
 
-                asset.Update();
+                //asset.Update();
 
                 log.Info("Asset updated");
             }
