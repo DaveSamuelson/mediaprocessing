@@ -117,18 +117,18 @@ namespace MediaFunctions
                 //foreach (var sourceBlob in blobList)
                 //{
                     var assetFile = newAsset.AssetFiles.Create((sourceBlob2 as ICloudBlob).Name);
-
+                    
                     ICloudBlob destinationBlob = destAssetContainer.GetBlockBlobReference(assetFile.Name);
 
-                    // Call the CopyBlobHelpers.CopyBlobAsync extension method to copy blobs.
-                    using (Task task =
-                        CopyBlobHelpers.CopyBlobAsync((CloudBlockBlob)sourceBlob2,
-                            (CloudBlockBlob)destinationBlob,
-                            new BlobRequestOptions(),
-                            CancellationToken.None))
-                    {
-                        task.Wait();
-                    }
+                    //// Call the CopyBlobHelpers.CopyBlobAsync extension method to copy blobs.
+                    //using (Task task =
+                    //    CopyBlobHelpers.CopyBlobAsync((CloudBlockBlob)sourceBlob2,
+                    //        (CloudBlockBlob)destinationBlob,
+                    //        new BlobRequestOptions(),
+                    //        CancellationToken.None))
+                    //{
+                    //    task.Wait();
+                    //}
 
                     assetFile.ContentFileSize = (sourceBlob2 as ICloudBlob).Properties.Length;
                     assetFile.Update();
