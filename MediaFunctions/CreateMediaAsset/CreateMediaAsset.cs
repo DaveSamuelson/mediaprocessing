@@ -58,7 +58,7 @@ namespace MediaFunctions
 
                 // Used the chached credentials to create CloudMediaContext.
                 _context = new CloudMediaContext(_cachedCredentials);
-                                         
+                              
                 
                 newAsset = _context.Assets.Create(assetName, AssetCreationOptions.None);
                 log.Info($"Asset Created : {newAsset.Name} {newAsset.Uri}");
