@@ -47,7 +47,7 @@ namespace MediaFunctions
                 });
             }
 
-            string assetName = data.assetName + "Copy";
+            string assetName = data.assetName;
             log.Info($"Using Azure Media Services account : {_mediaServicesAccountName}");
             IAsset newAsset = null;
 
@@ -67,15 +67,13 @@ namespace MediaFunctions
 
                 
                 newAsset = _context.Assets.Create(assetName, AssetCreationOptions.None);
-
-                
-
                 
 
 
-                //IAccessPolicy writePolicy = _context.AccessPolicies.Create("writePolicy", TimeSpan.FromHours(24), AccessPermissions.Write);
-                //ILocator destinationLocator =
-                //    _context.Locators.CreateLocator(LocatorType.Sas, newAsset, writePolicy);
+                /// ####################################### FROM HERE
+               // IAccessPolicy writePolicy = _context.AccessPolicies.Create("writePolicy", TimeSpan.FromHours(24), AccessPermissions.Write);
+              //  ILocator destinationLocator =
+              //      _context.Locators.CreateLocator(LocatorType.Sas, newAsset, writePolicy);
 
                 //// Get the asset container URI and Blob copy from mediaContainer to assetContainer. 
                 //// Define the destination container and create this if it doesn't exist
@@ -95,7 +93,7 @@ namespace MediaFunctions
                 //CloudBlobContainer sourceContainer = blobClient.GetContainerReference(Environment.GetEnvironmentVariable("InputMediaContainer"));
                 //ICloudBlob sourceBlob = sourceContainer.GetBlockBlobReference(assetName);
 
-                
+
 
 
                 //// Associate asset file  
@@ -134,7 +132,7 @@ namespace MediaFunctions
 
                 ////destinationLocator.Delete();
                 //writePolicy.Delete();
-                
+
 
             }
             catch (Exception ex)
