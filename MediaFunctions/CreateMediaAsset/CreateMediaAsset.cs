@@ -28,8 +28,7 @@ namespace MediaFunctions
         // Field for service context.
         private static CloudMediaContext _context = null;
         private static MediaServicesCredentials _cachedCredentials = null;
-        private static CloudStorageAccount _storageAccount = null;
-      
+        
         public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceWriter log)
         {
             log.Info($"C# HTTP trigger function processed a request. RequestUri={req.RequestUri}");
@@ -59,11 +58,7 @@ namespace MediaFunctions
 
                 // Used the chached credentials to create CloudMediaContext.
                 _context = new CloudMediaContext(_cachedCredentials);
-
-               
-                _storageAccount =  new CloudStorageAccount(new StorageCredentials(_storageAccountName, _storageAccountKey), true);
-                CloudBlobClient blobClient = _storageAccount.CreateCloudBlobClient();
-
+                                         
                 
                 newAsset = _context.Assets.Create(assetName, AssetCreationOptions.None);
                 log.Info($"Asset Created : {newAsset.Name} {newAsset.Uri}");

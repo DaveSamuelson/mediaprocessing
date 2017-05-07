@@ -33,8 +33,7 @@ namespace MediaFunctions
         private static CloudMediaContext _context = null;
         private static MediaServicesCredentials _cachedCredentials = null;
         private static CloudStorageAccount _storageAccount = null;
-        private static CloudStorageAccount _destinationStorageAccount = null;
-
+        
         public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
         {
             log.Info($"Webhook was triggered!");
@@ -86,16 +85,14 @@ namespace MediaFunctions
                 }
                 log.Info("Asset found, ID: " + asset.Id);
 
-                // Get Source Blob 
-                CloudBlobClient sourceCloudBlobClient =  _storageAccount.CreateCloudBlobClient();
-                CloudBlobContainer sourceContainer = sourceCloudBlobClient.GetContainerReference(Environment.GetEnvironmentVariable("InputMediaContainer"));
-                CloudBlockBlob sourceBlob2 = sourceContainer.GetBlockBlobReference(assetname);
+                // Create BLOB Client for interacing with Azure Storage
+                _storageAccount = new CloudStorageAccount(new StorageCredentials(_storageAccountName, _storageAccountKey), true);
+                CloudBlobClient blobClient =  _storageAccount.CreateCloudBlobClient();
+
+                // Get reference to source blob that needs to be assigned to Asset
+                CloudBlobContainer sourceContainer = blobClient.GetContainerReference(Environment.GetEnvironmentVariable("InputMediaContainer"));
+                CloudBlockBlob sourceBlob = sourceContainer.GetBlockBlobReference(assetname);
                 
-                // FROM HERE 
-                _destinationStorageAccount = new CloudStorageAccount(new StorageCredentials(_storageAccountName, _storageAccountKey), true);
-                CloudBlobClient destBlobStorage = _destinationStorageAccount.CreateCloudBlobClient();
-
-
                 IAccessPolicy writePolicy = _context.AccessPolicies.Create("writePolicy",
                     TimeSpan.FromHours(24), AccessPermissions.Write);
 
@@ -106,7 +103,7 @@ namespace MediaFunctions
                 log.Info($"About to get destination asset container");
                 // Get the asset container URI and Blob copy from mediaContainer to assetContainer. 
                 CloudBlobContainer destAssetContainer =
-                    destBlobStorage.GetContainerReference((new Uri(destinationLocator.Path)).Segments[1]);
+                    blobClient.GetContainerReference((new Uri(destinationLocator.Path)).Segments[1]);
                 log.Info($"Got destination asset container {destAssetContainer.Uri}");
 
 
@@ -122,12 +119,12 @@ namespace MediaFunctions
                 log.Info($"Dest Blob name: {destBlob.Name} {destBlob.Uri}");
 
                 log.Info($"About to copy to destination blob");
-                await destBlob.StartCopyAsync(sourceBlob2);
+                await destBlob.StartCopyAsync(sourceBlob);
                 log.Info($"BLOB copied");
 
 
                 destBlob.FetchAttributes();
-                var assetFile = asset.AssetFiles.Create((sourceBlob2 as ICloudBlob).Name);
+                var assetFile = asset.AssetFiles.Create((sourceBlob as ICloudBlob).Name);
 
                
                 assetFile.Update();
