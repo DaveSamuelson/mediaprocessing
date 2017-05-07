@@ -122,6 +122,14 @@ namespace MediaFunctions
                 CloudBlockBlob destBlob = destAssetContainer.GetBlockBlobReference(assetName);
                 log.Info($"Dest Blob name: {destBlob.Name} {destBlob.Uri}");
 
+                log.Info($"About to copy to destination blob");
+                await destBlob.StartCopyAsync(sourceBlob2);
+                log.Info($"BLOB copied");
+
+
+                destBlob.FetchAttributes();
+                var assetFile = newAsset.AssetFiles.Create((sourceBlob2 as ICloudBlob).Name);
+
                 //var blobList = sourceContainer.ListBlobs();
 
                 ////foreach (var sourceBlob in blobList)
