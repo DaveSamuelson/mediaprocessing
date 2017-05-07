@@ -110,46 +110,47 @@ namespace MediaFunctions
                     destBlobStorage.GetContainerReference((new Uri(destinationLocator.Path)).Segments[1]);
                 log.Info($"Got destination asset container {destAssetContainer.Uri}");
 
-                //if (destAssetContainer.CreateIfNotExists())
-                //{
-                //    destAssetContainer.SetPermissions(new BlobContainerPermissions
-                //    {
-                //        PublicAccess = BlobContainerPublicAccessType.Blob
-                //    });
-                //}
+
+                    destAssetContainer.SetPermissions(new BlobContainerPermissions
+                    {
+                        PublicAccess = BlobContainerPublicAccessType.Container
+                    });
 
 
+                // Get hold of the destination blob
+
+                CloudBlockBlob destBlob = destAssetContainer.GetBlockBlobReference(assetName);
+                log.Info($"Dest Blob name: {destBlob.Name} {destBlob.Uri}");
+
+                //var blobList = sourceContainer.ListBlobs();
+
+                ////foreach (var sourceBlob in blobList)
+                ////{
+                //    var assetFile = newAsset.AssetFiles.Create((sourceBlob2 as ICloudBlob).Name);
+
+                //    ICloudBlob destinationBlob = destAssetContainer.GetBlockBlobReference(assetFile.Name);
+
+                //    //// Call the CopyBlobHelpers.CopyBlobAsync extension method to copy blobs.
+                //    //using (Task task =
+                //    //    CopyBlobHelpers.CopyBlobAsync((CloudBlockBlob)sourceBlob2,
+                //    //        (CloudBlockBlob)destinationBlob,
+                //    //        new BlobRequestOptions(),
+                //    //        CancellationToken.None))
+                //    //{
+                //    //    task.Wait();
+                //    //}
+
+                //    assetFile.ContentFileSize = (sourceBlob2 as ICloudBlob).Properties.Length;
+                //    assetFile.Update();
+                //    Console.WriteLine("File {0} is of {1} size", assetFile.Name, assetFile.ContentFileSize);
+                ////}
+
+                //newAsset.Update();
+
+                //destinationLocator.Delete();
+                //writePolicy.Delete();
 
 
-                var blobList = sourceContainer.ListBlobs();
-
-                //foreach (var sourceBlob in blobList)
-                //{
-                    var assetFile = newAsset.AssetFiles.Create((sourceBlob2 as ICloudBlob).Name);
-                    
-                    ICloudBlob destinationBlob = destAssetContainer.GetBlockBlobReference(assetFile.Name);
-
-                    //// Call the CopyBlobHelpers.CopyBlobAsync extension method to copy blobs.
-                    //using (Task task =
-                    //    CopyBlobHelpers.CopyBlobAsync((CloudBlockBlob)sourceBlob2,
-                    //        (CloudBlockBlob)destinationBlob,
-                    //        new BlobRequestOptions(),
-                    //        CancellationToken.None))
-                    //{
-                    //    task.Wait();
-                    //}
-
-                    assetFile.ContentFileSize = (sourceBlob2 as ICloudBlob).Properties.Length;
-                    assetFile.Update();
-                    Console.WriteLine("File {0} is of {1} size", assetFile.Name, assetFile.ContentFileSize);
-                //}
-
-                newAsset.Update();
-
-                destinationLocator.Delete();
-                writePolicy.Delete();
-
-               
 
 
 
