@@ -98,11 +98,11 @@ namespace MediaFunctions
                 log.Info($"destinationContainerName : {destinationContainerName}");
 
                 CloudBlobContainer assetContainer = destBlobStorage.GetContainerReference(destinationContainerName);
-                log.Info($"assetContainer retrieved");
+                log.Info($"assetContainer retrieved {assetContainer.Name}");
 
                 // Get hold of the destination blobs
                 var blobs = assetContainer.ListBlobs();
-                log.Info($"blobs retrieved");
+                log.Info($"blobs retrieved {blobs.Count()}");
 
 
                 foreach (CloudBlockBlob blob in blobs)
