@@ -106,7 +106,7 @@ namespace MediaFunctions
                 sourceCloudBlobClient.GetContainerReference(assetName);
 
 
-
+                //IAsset asset2 = _context.Assets.CreateFromBlob(sourceBlob, storageCredentials, AssetCreationOptions.None);
 
                 var blobList = sourceContainer.ListBlobs();
 
