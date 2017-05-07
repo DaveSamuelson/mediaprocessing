@@ -69,16 +69,22 @@ namespace MediaFunctions
 
                 
                 newAsset = _context.Assets.Create(assetName, AssetCreationOptions.None);
+                log.Info($"Asset Created : {newAsset.Name} {newAsset.Uri}");
 
                 CloudBlobClient sourceCloudBlobClient =
                 _storageAccount.CreateCloudBlobClient();
 
+
+                log.Info($"About to get source container reference: InputMediaContainer {Environment.GetEnvironmentVariable("InputMediaContainer")}");
                 CloudBlobContainer sourceContainer =
                 sourceCloudBlobClient.GetContainerReference(Environment.GetEnvironmentVariable("InputMediaContainer"));
+                log.Info($"Got soucontainer {sourceContainer.Uri}");
 
+
+                log.Info($"About to get block blob referenece");
                 CloudBlockBlob sourceBlob2 = sourceContainer.GetBlockBlobReference(assetName);
                 //IAsset asset2 = _context.Assets.CreateFromBlob(sourceBlob2, new StorageCredentials(_storageAccountName, _storageAccountKey), AssetCreationOptions.None);
-
+                log.Info($"Got block blob reference {sourceBlob2.Uri}");
 
 
 
@@ -140,17 +146,7 @@ namespace MediaFunctions
                 destinationLocator.Delete();
                 writePolicy.Delete();
 
-                // Set the primary asset file.
-                // If, for example, we copied a set of Smooth Streaming files, 
-                // set the .ism file to be the primary file. 
-                // If we, for example, copied an .mp4, then the mp4 would be the primary file. 
-                //var ismAssetFiles = newAsset.AssetFiles.ToList().
-                //    Where(f => f.Name.EndsWith(".ism", StringComparison.OrdinalIgnoreCase)).ToArray();
-
-                // The following code assigns the first .ism file as the primary file in the asset.
-                // An asset should have one .ism file.  
-                //ismAssetFiles.First().IsPrimary = true;
-                //ismAssetFiles.First().Update();
+               
 
 
 
