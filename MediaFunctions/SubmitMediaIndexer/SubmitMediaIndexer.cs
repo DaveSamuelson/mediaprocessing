@@ -120,15 +120,15 @@ namespace MediaFunctions
                     string homePath = Environment.GetEnvironmentVariable("HOME", EnvironmentVariableTarget.Process);
                     log.Info($"Home path = {homePath}");
 
-                string presetPath;
-
+                    string presetPath;
                     if (homePath == String.Empty)
                     {
-                        presetPath = @"../presets/" + "IndexerV2.json";
+                        presetPath = @"../Presets/" + "IndexerV2.json";
                     }
                     else
                     {
-                        presetPath = Path.Combine(homePath, @"site\repository\media-functions-for-logic-app\presets\" + "IndexerV2.json");
+                        // TODO:  Need to make path configurable
+                        presetPath = Path.Combine(homePath, @"site\repository\" + @"MediaFunctions\presets\" + "IndexerV2.json");
                     }
 
                     string Configuration = File.ReadAllText(presetPath).Replace("EnUs", data.indexV2Language);
