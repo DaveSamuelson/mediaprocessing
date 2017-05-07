@@ -74,7 +74,7 @@ namespace MediaFunctions
                 _storageAccount.CreateCloudBlobClient();
 
                 CloudBlobContainer sourceContainer =
-                sourceCloudBlobClient.GetContainerReference(Environment.GetEnvironmentVariable("InputMediaContainer "));
+                sourceCloudBlobClient.GetContainerReference(Environment.GetEnvironmentVariable("InputMediaContainer"));
 
                 CloudBlockBlob sourceBlob2 = sourceContainer.GetBlockBlobReference(assetName);
                 //IAsset asset2 = _context.Assets.CreateFromBlob(sourceBlob2, new StorageCredentials(_storageAccountName, _storageAccountKey), AssetCreationOptions.None);
