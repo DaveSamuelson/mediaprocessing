@@ -36,7 +36,7 @@ namespace MediaFunctions
 
         public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
         {
-            log.Info($"Webhook was triggered!");
+            log.Info($"HTTP trigger function processed a request. RequestUri={req.RequestUri}");
 
             string jsonContent = await req.Content.ReadAsStringAsync();
             dynamic data = JsonConvert.DeserializeObject(jsonContent);

@@ -18,7 +18,6 @@ namespace MediaFunctions
 
     public class CreateMediaAsset
     {
-        
         private static readonly string _mediaServicesAccountName = Environment.GetEnvironmentVariable("AMSAccount");
         private static readonly string _mediaServicesAccountKey = Environment.GetEnvironmentVariable("AMSKey");
 
@@ -31,7 +30,7 @@ namespace MediaFunctions
         
         public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceWriter log)
         {
-            log.Info($"C# HTTP trigger function processed a request. RequestUri={req.RequestUri}");
+            log.Info($"HTTP trigger function processed a request. RequestUri={req.RequestUri}");
 
             string jsonContent = await req.Content.ReadAsStringAsync();
             dynamic data = JsonConvert.DeserializeObject(jsonContent);

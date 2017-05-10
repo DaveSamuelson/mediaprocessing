@@ -40,7 +40,7 @@ namespace MediaFunctions
             bool useEncoderOutputForAnalytics = false;
             IAsset outputEncoding = null;
 
-            log.Info($"Webhook was triggered!");
+            log.Info($"HTTP trigger function processed a request. RequestUri={req.RequestUri}");
 
             string jsonContent = await req.Content.ReadAsStringAsync();
             dynamic data = JsonConvert.DeserializeObject(jsonContent);
@@ -87,17 +87,17 @@ namespace MediaFunctions
                 // Declare a new encoding job with the Standard encoder
                 int priority = 10;
                 job = _context.Jobs.Create($"Azure Functions Job Submission: {asset.Name}", priority);
-
+                
                 IAsset an_asset = useEncoderOutputForAnalytics ? outputEncoding : asset;
 
 
                 // Get a media processor reference, and pass to it the name of the processor to use for the specific task.
                 IMediaProcessor mediaProcessor = _context.MediaProcessors.Where(p => p.Name == "Azure Media Indexer 2 Preview").ToList().OrderBy(p => new Version(p.Version)).LastOrDefault();
-
+                
                 if (mediaProcessor == null)
                     throw new ArgumentException(string.Format("Unknown media processor", "Azure Media Indexer 2 Preview"));
 
-
+                
 
 
 
@@ -120,16 +120,15 @@ namespace MediaFunctions
                 log.Info($"Preset Configuration = {Configuration}");
 
                 // Create a task with the encoding details, using a string preset.
-                var task = job.Tasks.AddNew("Azure Media Indexer 2 Preview" + " task", mediaProcessor, Configuration, TaskOptions.None);
+                var task = job.Tasks.AddNew ("Azure Media Indexer 2 Preview" + " task", mediaProcessor, Configuration, TaskOptions.None);
                 task.Priority = priority;
 
                 // Specify the input asset to be indexed.
                 task.InputAssets.Add(an_asset);
-
                 // Add an output asset to contain the results of the job.
                 task.OutputAssets.AddNew(an_asset.Name + " " + "Azure Media Indexer 2 Preview" + " Output", AssetCreationOptions.None);
                 OutputIndex2 = taskindex++;
-
+               
            
                 job.Submit();
                 log.Info("Job Submitted");
